@@ -75,12 +75,21 @@ class DeepNetwork(object):
 		layer3_input = layer2.output.flatten(2)
 		
 		layer3 = FullyConnectedLayer(
-			rng, inpt=layer3_input,
-			n_in=nkerns[2]*3*3,
-			n_out=1024,
+			rng, inpt=layer3_input, inpt_dropout=layer3_input,
+			n_in=nkerns[2]*3*3, n_out=1024
 		)
+		
+		layer4 = FullyConnectedLayer(
+			rng, inpt=layer3.output, inpt_dropout=layer3.output,
+			n_in=1024, n_out=1024
+		)
+		
+		layer5 = LogisticRegression(input=layer4.output, n_in=1024, n_out=2)
+		
+		cost = layer5.negative_log_likelihood(y)
 
 class ConvPoolLayer(object):
+
 	def __init__(self, rng, inpt, filter_shape, image_shape, poolsize=(2, 2),
 				activation_fn=ReLU):
 		self.inpt = inpt
@@ -116,5 +125,26 @@ class ConvPoolLayer(object):
 		self.params = [self.W, self.b]
 
 class FullyConnectedLayer(object):
+	
+	def __init__(self, rng, inpt, inpt_dropout, n_in, n_out,
+				activation_fn=ReLU, p_dropout=0.5):
+		self.rng = rng
+		self.inpt = inpt
+		self.inpt_dropout = inpt_dropout
+		self.n_in = n_in
+		self.n_out = n_out
+		self.activation_fn = activation_fn
+		self.p_dropout=p_dropout
+		
+		self.W = theano.shared(np.asarray(rng.uniform(low=, high=, size=(n_in, n_out)),
+				dtype=theano.config.floatX), name='W', borrow=True)
+		
+		self.b = theano.shared(np.asarray(rng.uniform(low=, high=, size=(n_out,)),
+				dtype=theano.config.floatX), name='b', borrow=True)
+		
+		self.output = self.activation_fn((1-self.p_dropout)*T.dot(self.inpt, self.W) + self.b)
+		self.y_out = T.argmax(self.output, axis=1)
+		self.inpt_dropout = dropout_layer(inpt_dropout, self.p_dropout)
+		self.output_dropout = self.activation_fn(T.dot(self.inpt_dropout, self.W) + self.b)
 
 class SoftmaxLayer(object):
