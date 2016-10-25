@@ -1,2 +1,2 @@
 # AML
-Classification of recurrent and non-recurrent cancer nuclei images using concolutional neural network
+Classification of recurrent and non-recurrent cancer nuclei images using convolutional neural network
