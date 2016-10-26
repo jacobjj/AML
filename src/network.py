@@ -26,8 +26,7 @@ def load_data():
 	# Size is number of patches, number of input feature maps, patch height, patch width
 	train_data = np.reshape(train_data,(train_data.shape[0],3,51,51))
 	print('Size of training data is '+ str(train_data.shape))
-	train_target = np.asarray(data['target'])
-	train_target = np.reshape(train_target, -1)
+	train_target = np.squeeze(np.asarray(data['target']))
 	print('Size of training target is '+ str(train_target.shape))
 	
 	#Loading validation data    
@@ -36,8 +35,7 @@ def load_data():
 	# Size is number of patches, number of input feature maps, patch height, patch width
 	valid_data = np.reshape(valid_data,(valid_data.shape[0],3,51,51))
 	print('Size of validation data is '+str(valid_data.shape))
-	valid_target = np.asarray(data['target'])
-	valid_target = np.reshape(valid_target, -1)
+	valid_target = np.squeeze(np.asarray(data['target']))
 	print('Size of validation target is '+str(valid_target.shape))
 	
 	#Loading testing data
@@ -46,8 +44,7 @@ def load_data():
 	# Size is number of patches, number of input feature maps, patch height, patch width
 	test_data = np.reshape(test_data,(test_data.shape[0],3,51,51))
 	print('Size of testing data is '+ str(test_data.shape))
-	test_target = np.asarray(data['target'])
-	test_target = np.reshape(test_target, -1)
+	test_target = np.squeeze(np.asarray(data['target']))
 	print('Size of testing target is '+ str(test_target.shape))
 
 	def shared(data_x, data_y, borrow=True):
